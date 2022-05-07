@@ -420,8 +420,16 @@ namespace IFix.Core
         //[Il2CppSetOption(Option.DivideByZeroChecks, false)]
         public void Execute(int methodIndex, ref Call call, int argsCount, int refCount = 0)
         {
-            Execute(unmanagedCodes[methodIndex], call.argumentBase + refCount, call.managedStack,
-                call.evaluationStackBase, argsCount, methodIndex, refCount, call.topWriteBack);
+            try
+            {
+                Execute(unmanagedCodes[methodIndex], call.argumentBase + refCount, call.managedStack,
+                    call.evaluationStackBase, argsCount, methodIndex, refCount, call.topWriteBack);
+            }
+            catch (Exception e)
+            {
+                Log.Info("Execute encounter error!");
+                Log.Error(e.ToString());
+            }
         }
 
 
@@ -431,8 +439,17 @@ namespace IFix.Core
         public Value* Execute(int methodIndex, Value* argumentBase, object[] managedStack,
             Value* evaluationStackBase, int argsCount)
         {
-            return Execute(unmanagedCodes[methodIndex], argumentBase, managedStack, evaluationStackBase,
-                argsCount, methodIndex);
+            try
+            {
+                return Execute(unmanagedCodes[methodIndex], argumentBase, managedStack, evaluationStackBase,
+                    argsCount, methodIndex);
+            }
+            catch (Exception e)
+            {
+                Log.Info("Execute encounter error! Return default value!");
+                Log.Error(e.ToString());
+                return argumentBase;
+            }
         }
 
         void printStack(string title, Value* val)

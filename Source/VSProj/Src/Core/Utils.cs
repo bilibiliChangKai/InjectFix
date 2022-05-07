@@ -11,6 +11,36 @@ using System.Collections.Generic;
 
 namespace IFix.Core
 {
+    public static class Log
+    {
+        public delegate void Logger(string str, string type);
+
+        public static void Init(Logger info, Logger error)
+        {
+            infoFunc = info;
+            errorFunc = error;
+            Info("Init IFix log success!");
+        }
+
+        private static Logger infoFunc = null;
+        private static Logger errorFunc = null;
+        public static void Info(string str)
+        {
+            if (infoFunc != null)
+            {
+                infoFunc(str, "IFix");
+            }
+        }
+
+        public static void Error(string str)
+        {
+            if (errorFunc != null)
+            {
+                errorFunc(str, "IFix");
+            }
+        }
+    }
+
     //虚拟机使用给工具类
     public static class Utils
     {

@@ -748,6 +748,11 @@ namespace IFix.Core
             managedStack[ptr - evaluationStackBase] = null;
             return ret;
         }
+    
+        public bool IsStruct(Type t)
+        {
+            return t.IsValueType && !t.IsPrimitive;
+        }
 
         public T GetAsType<T>(int offset = 0)
         {
@@ -772,6 +777,17 @@ namespace IFix.Core
             //{
             //    return (T)GetObject(offset);
             //}
+
+            var obj = GetObject(offset);
+
+            // 这里判断一下要不要生成默认的struct
+            // PS: 这里只有一种情况才会出现，就是出现报错
+            if (obj == null && IsStruct(typeof(T)))
+            {
+                Log.Info("GetAsType create empty struct! T: " + typeof(T).Name);
+                return (T)System.Activator.CreateInstance(typeof(T));
+            }
+
             return (T)GetObject(offset);
         }
 
